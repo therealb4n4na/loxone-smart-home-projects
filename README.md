@@ -1,121 +1,120 @@
 # Loxone Smart Home Projects
 
-> Eine Sammlung lokaler, nachvollziehbar dokumentierter Integrationen für Loxone, Raspberry Pi / DietPi und typische Smart-Home-Geräte.
+> A collection of local, well-documented integrations for Loxone, Raspberry Pi / DietPi, and selected smart-home devices.
 
-Die Projekte in dieser Sammlung sind aus realen Installationen entstanden und verfolgen ein gemeinsames Ziel: Geräte und Dienste möglichst **lokal, transparent und robust** in Loxone einzubinden, statt unnötig zusätzliche Plattformen oder Cloud-Abhängigkeiten einzuführen.
+These projects grew out of real installations and share one goal: integrate devices and services into Loxone in a **local, transparent, and robust** way whenever technically possible, without adding unnecessary platforms or cloud dependencies.
 
-Die Dokumentation ist derzeit überwiegend auf Deutsch. Issues und Pull Requests können auf Deutsch oder Englisch erstellt werden.
+Public documentation is maintained in English. Issues and pull requests should preferably be written in English so that findings remain useful to an international audience.
 
-## Projekte
+## Projects
 
-| Projekt | Release | Zweck |
+| Project | Release | Purpose |
 | --- | --- | --- |
-| [loxone-mhi-bridge](https://github.com/therealb4n4na/loxone-mhi-bridge) | `v3.3.0` | Lokale Integration von Mitsubishi Heavy Industries Klimageräten mit WF-RAC-Adaptern, inklusive passivem Polling, verifizierten Steuerbefehlen und Multi-Split-Konfliktlogik. |
-| [loxone-bayrol-bridge](https://github.com/therealb4n4na/loxone-bayrol-bridge) | `v2.0.0` | BAYROL-Pooldaten für Loxone, lokaler Status-Cache sowie kontrollierte pH-Auto/Off-Steuerung über MQTT/WebSocket. |
-| [loxone-km200-bridge](https://github.com/therealb4n4na/loxone-km200-bridge) | `v1.0.0` | Buderus/Bosch KM200 lokal auslesen, ausgewählte Werte schreiben und verifizieren sowie Warmwasser-/Heizungswerte historisieren. |
-| [loxone-rpi-health](https://github.com/therealb4n4na/loxone-rpi-health) | `v1.3.0` | Raspberry-Pi-/DietPi-Systemzustand und zentrale Überwachung lokaler Smart-Home-Dienste für Loxone. |
-| [loxone-desk-lamp-bridge](https://github.com/therealb4n4na/loxone-desk-lamp-bridge) | `v1.0.0` | Kleine lokale miIO-Bridge für Xiaomi/Yeelight-kompatible Schreibtischlampen mit Loxone-Lumitech-Ansteuerung. |
+| [loxone-mhi-bridge](https://github.com/therealb4n4na/loxone-mhi-bridge) | `v3.3.0` | Local integration of Mitsubishi Heavy Industries air conditioners using WF-RAC adapters, including passive polling, verified control commands, and multi-split conflict handling. |
+| [loxone-bayrol-bridge](https://github.com/therealb4n4na/loxone-bayrol-bridge) | `v2.0.0` | BAYROL pool data for Loxone, local status caching, and controlled pH auto/off handling through MQTT/WebSocket. |
+| [loxone-km200-bridge](https://github.com/therealb4n4na/loxone-km200-bridge) | `v1.0.0` | Local Buderus/Bosch KM200 access with selected verified writes and optional DHW/heating history. |
+| [loxone-desk-lamp-bridge](https://github.com/therealb4n4na/loxone-desk-lamp-bridge) | `v1.0.0` | Small local miIO bridge for Xiaomi/Yeelight-compatible desk lamps using Loxone Lumitech values. |
 
-## Gemeinsame Grundsätze
+## Shared design principles
 
 ### Local first
 
-Wo technisch sinnvoll, läuft die Integration vollständig im lokalen Netzwerk. Cloud-Kommunikation wird nur verwendet, wenn das Zielsystem sie technisch benötigt.
+Where technically possible, integrations run entirely inside the local network. Cloud communication is used only when the target system itself requires it.
 
-### Lesen ist nicht Schreiben
+### Reading is not writing
 
-Ein laufender Poller soll Geräte nicht nebenbei verändern. Statusabfragen und Steuerbefehle werden in den Projekten deshalb bewusst getrennt.
+A periodic poller should not silently change devices. Status collection and control commands are deliberately separated.
 
-### Schreibbefehle werden verifiziert
+### Verify writes
 
-Wenn eine Bridge einen Zustand verändert, reicht ein erfolgreich gesendeter HTTP-/MQTT-Befehl nicht automatisch als Beweis. Kritische Schreiboperationen werden nach Möglichkeit durch Rücklesen des tatsächlichen Zustands bestätigt.
+A successfully transmitted HTTP or MQTT request does not automatically prove that a physical device accepted the requested state. Important write operations are therefore verified by reading the actual state back whenever possible.
 
-### Loxone bleibt einfach
+### Keep Loxone simple
 
-Komplexe Protokolle, Plausibilitätsprüfungen, Retries und Fehlerbehandlung gehören in die Bridge. Loxone soll möglichst wenige, klar definierte HTTP-Eingänge und Statuscodes benötigen.
+Protocol details, plausibility checks, retries, caching, and error handling belong inside the bridge. The Loxone side should need only a small set of clear HTTP inputs, outputs, and status codes.
 
-### Fehler müssen diagnostizierbar sein
+### Make failures diagnosable
 
-`systemd active` bedeutet nicht automatisch, dass das dahinterliegende Gerät erreichbar ist. Die Projekte unterscheiden deshalb soweit möglich zwischen:
+`systemd active` does not prove that the underlying device or gateway is reachable. Projects distinguish, where possible, between:
 
-- Prozess-/Dienststatus
-- Geräte- oder Gateway-Erreichbarkeit
-- Datenalter und Datenqualität
-- erfolgreicher bzw. fehlgeschlagener Steuerung
+- process/service health
+- device or gateway reachability
+- data age and data quality
+- successful and failed control operations
 
-### Keine Secrets in Git
+### No secrets in Git
 
-Produktive Passwörter, Tokens, Geräteidentitäten, lokale State-Dateien, Logs und installationsspezifische Konfigurationen gehören nicht ins Repository. Dafür existieren Beispielkonfigurationen und `.gitignore`-Regeln.
+Production passwords, tokens, device identities, state files, logs, captures, and installation-specific configuration do not belong in the repository. Example configuration files and `.gitignore` rules are used instead.
 
-## Typische Architektur
+## Typical architecture
 
 ```text
-Gerät / Gateway / Cloud
+Device / Gateway / Cloud
           │
           ▼
-  Python-Bridge auf Linux
-  ├─ Protokoll-/API-Logik
-  ├─ Status-Cache
-  ├─ Fehlerbehandlung
-  ├─ Verifikation
-  └─ HTTP-API
+   Python bridge on Linux
+   ├─ protocol / API logic
+   ├─ state cache
+   ├─ error handling
+   ├─ verification
+   └─ HTTP API
           │
           ▼
         Loxone
 ```
 
-Die Bridges laufen typischerweise als `systemd`-Dienste auf DietPi/Debian. Ein Raspberry Pi reicht für viele dieser Integrationen problemlos aus.
+The bridges typically run as `systemd` services on DietPi/Debian. A Raspberry Pi is sufficient for many of these integrations.
 
-## Versionierung
+## Versioning
 
-Die Projekte verwenden [Semantic Versioning](https://semver.org/):
+The projects follow [Semantic Versioning](https://semver.org/):
 
 ```text
 MAJOR.MINOR.PATCH
 ```
 
-- **MAJOR** – inkompatible Änderungen an API, Konfiguration oder Verhalten
-- **MINOR** – neue rückwärtskompatible Funktionen
-- **PATCH** – Fehlerbehebungen und kleine rückwärtskompatible Änderungen
+- **MAJOR** – incompatible API, configuration, or behavior changes
+- **MINOR** – backward-compatible new functionality
+- **PATCH** – fixes and small backward-compatible changes
 
-Stabile veröffentlichte Stände erhalten einen Git-Tag und einen GitHub Release. Der jeweilige `CHANGELOG.md` beschreibt die wesentlichen Änderungen.
+Stable states receive a Git tag and a GitHub Release. Each project's `CHANGELOG.md` records notable changes.
 
 ## Installation
 
-Es gibt bewusst keinen universellen Installer für alle Projekte. Die Geräte, Protokolle und Sicherheitsanforderungen unterscheiden sich zu stark.
+There is intentionally no universal installer for the complete collection because the devices, protocols, dependencies, and security requirements differ too much.
 
-Für ein Projekt daher immer zuerst dessen README lesen. Typisch ist:
+Start with the README of the project you want to use. A typical workflow is:
 
 ```text
-1. Repository klonen
-2. Beispielkonfiguration kopieren und lokal anpassen
-3. Python-Abhängigkeiten installieren
-4. Bridge lokal testen
-5. systemd-Dienst einrichten
-6. HTTP-Endpunkte prüfen
-7. erst danach Loxone konfigurieren
+1. Clone the repository
+2. Copy the example configuration and adapt it locally
+3. Install Python dependencies
+4. Test the bridge locally
+5. Configure the systemd service
+6. Verify the HTTP endpoints
+7. Configure Loxone only after the bridge is known to work
 ```
 
-## Sicherheit
+## Security
 
-Diese Projekte sind für lokale Heim-/Gebäudenetze gedacht. Schreibende HTTP-Endpunkte sollten nicht direkt ins Internet veröffentlicht werden.
+These projects are intended for trusted local home/building networks. Write-capable HTTP endpoints should not be exposed directly to the public Internet.
 
-Wo möglich, werden Schreibzugriffe zusätzlich zur Netzwerk-Firewall auf eine konfigurierte Steuer-IP begrenzt. Für die jeweilige Implementierung gilt die `SECURITY.md` des Projekts.
+Where possible, write access is restricted to a configured controller IP in addition to network-level firewall rules. See each project's `SECURITY.md` for implementation-specific guidance.
 
-## Beiträge und Erkenntnisse
+## Contributions and technical findings
 
-Fehlerberichte, dokumentierte Gerätevarianten, Protokollbeobachtungen und Pull Requests sind willkommen. Besonders bei herstellerabhängigen oder reverse-engineerten Schnittstellen ist eine klare Trennung wichtig zwischen:
+Bug reports, documented hardware variants, protocol observations, and pull requests are welcome. For vendor-specific or reverse-engineered interfaces, distinguish clearly between:
 
-- **verifiziert** – am realen Gerät reproduzierbar bestätigt
-- **experimentell** – plausibel, aber noch nicht ausreichend bestätigt
-- **unbekannt** – beobachtet, Bedeutung noch offen
+- **Verified** – reproduced on real hardware
+- **Experimental** – plausible and tested, but not yet sufficiently confirmed
+- **Unknown** – observed, but meaning is still unclear
 
-Damit sollen Erkenntnisse nachvollziehbar wiederverwendbar sein, anstatt nur eine Sammlung undokumentierter Werte oder „magischer“ IDs zu veröffentlichen.
+The goal is to make findings reusable and reviewable instead of publishing unexplained values or "magic" IDs.
 
-## Umfang dieser Sammlung
+## Scope of this collection
 
-Dieses Repository listet bewusst nur **allgemein nutzbare öffentliche Integrationen**. Private oder installationsspezifische Projekte werden hier nicht aufgeführt.
+This repository intentionally lists only **generally reusable public integrations**. Private or installation-specific projects are not included.
 
-## Lizenz
+## License
 
-Die hier verlinkten Softwareprojekte stehen, sofern im jeweiligen Repository nicht anders angegeben, unter der MIT License. Für Details gilt immer die `LICENSE`-Datei des jeweiligen Projekts.
+Unless a linked repository states otherwise, the software projects in this collection use the MIT License. The `LICENSE` file in each individual repository is authoritative.

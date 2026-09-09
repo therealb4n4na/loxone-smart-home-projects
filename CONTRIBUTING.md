@@ -1,14 +1,14 @@
 # Contributing
 
-Beiträge sind willkommen. Bitte Änderungen grundsätzlich im jeweiligen Fach-Repository einreichen, nicht im Übersichts-Repository.
+Contributions are welcome. Please submit code changes, bug reports, and device-specific findings to the relevant project repository rather than this overview repository.
 
-Für gute Fehlerberichte sind besonders hilfreich:
+Useful bug reports usually include:
 
-- betroffene Projektversion
-- Hardware-/Gerätevariante
-- relevante Firmware-Version
-- erwartetes und tatsächliches Verhalten
-- anonymisierte Logs
-- reproduzierbare Schritte
+- affected project version
+- hardware/device variant
+- relevant firmware version
+- expected and actual behavior
+- anonymized logs
+- reproducible steps
 
-Keine Passwörter, Tokens, privaten Schlüssel oder vollständigen produktiven Konfigurationen veröffentlichen.
+Please do not publish passwords, tokens, private keys, session data, complete production configurations, or other secrets.
