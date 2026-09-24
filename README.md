@@ -1,20 +1,34 @@
 # Loxone Smart Home Projects
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+![Focus](https://img.shields.io/badge/Focus-Loxone%20integrations-informational.svg)
+![Platform](https://img.shields.io/badge/Platform-Linux%20%2F%20DietPi-success.svg)
+
 > A collection of local, well-documented integrations for Loxone, Raspberry Pi / DietPi, and selected smart-home devices.
 
 These projects grew out of real installations and share one goal: integrate devices and services into Loxone in a **local, transparent, and robust** way whenever technically possible, without adding unnecessary platforms or cloud dependencies.
 
 Public documentation is maintained in English. Issues and pull requests should preferably be written in English so that findings remain useful to an international audience.
 
+## What you'll find here
+
+- reusable integrations that were built and tested against real hardware
+- clear separation between telemetry and write-capable control paths
+- documented safety boundaries, known limits, and failure behavior
+- example configuration without publishing production credentials or installation-specific data
+- hardware details marked as **tested** only when they were actually verified on a real installation
+
+Each linked project contains its own installation, configuration, Loxone, troubleshooting, and security notes.
+
 ## Projects
 
 | Project | Release | Purpose |
 | --- | --- | --- |
 | [loxone-mhi-bridge](https://github.com/therealb4n4na/loxone-mhi-bridge) | `v3.3.0` | Local integration of Mitsubishi Heavy Industries air conditioners using WF-RAC adapters, including passive polling, verified control commands, and multi-split conflict handling. |
-| [loxone-bayrol-bridge](https://github.com/therealb4n4na/loxone-bayrol-bridge) | `v2.0.0` | BAYROL pool data for Loxone, local status caching, and controlled pH auto/off handling through MQTT/WebSocket. |
+| [loxone-bayrol-bridge](https://github.com/therealb4n4na/loxone-bayrol-bridge) | `v2.0.0` | BAYROL pool data for Loxone with cached status, pH/chlorine automation, water-care states, chemical tracking, and persistent winter mode. |
 | [loxone-km200-bridge](https://github.com/therealb4n4na/loxone-km200-bridge) | `v1.0.0` | Local Buderus/Bosch KM200 access with selected verified writes and optional DHW/heating history. |
 | [loxone-buderus-wps-can-bridge](https://github.com/therealb4n4na/loxone-buderus-wps-can-bridge) | `unreleased` | Read-only Buderus WPS / Rego1000 CAN telemetry for Loxone with controlled RTR reads and optional KM200 UI enrichment. |
-| [loxone-desk-lamp-bridge](https://github.com/therealb4n4na/loxone-desk-lamp-bridge) | `v1.0.0` | Small local miIO bridge for Xiaomi/Yeelight-compatible desk lamps using Loxone Lumitech values. |
+| [loxone-desk-lamp-bridge](https://github.com/therealb4n4na/loxone-desk-lamp-bridge) | `v1.0.0` | Local miIO bridge for a Xiaomi Desk Lamp Pro using Loxone Lumitech values, direct status feedback, and cached health monitoring. |
 
 ## Shared design principles
 
