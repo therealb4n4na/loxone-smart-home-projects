@@ -13,6 +13,7 @@ Public documentation is maintained in English. Issues and pull requests should p
 | [loxone-mhi-bridge](https://github.com/therealb4n4na/loxone-mhi-bridge) | `v3.3.0` | Local integration of Mitsubishi Heavy Industries air conditioners using WF-RAC adapters, including passive polling, verified control commands, and multi-split conflict handling. |
 | [loxone-bayrol-bridge](https://github.com/therealb4n4na/loxone-bayrol-bridge) | `v2.0.0` | BAYROL pool data for Loxone, local status caching, and controlled pH auto/off handling through MQTT/WebSocket. |
 | [loxone-km200-bridge](https://github.com/therealb4n4na/loxone-km200-bridge) | `v1.0.0` | Local Buderus/Bosch KM200 access with selected verified writes and optional DHW/heating history. |
+| [loxone-buderus-wps-can-bridge](https://github.com/therealb4n4na/loxone-buderus-wps-can-bridge) | `unreleased` | Read-only Buderus WPS / Rego1000 CAN telemetry for Loxone with controlled RTR reads and optional KM200 UI enrichment. |
 | [loxone-desk-lamp-bridge](https://github.com/therealb4n4na/loxone-desk-lamp-bridge) | `v1.0.0` | Small local miIO bridge for Xiaomi/Yeelight-compatible desk lamps using Loxone Lumitech values. |
 
 ## Shared design principles
